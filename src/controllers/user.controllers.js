@@ -25,7 +25,7 @@ export async function signIn(req,res){
   const {email, password} = req.body
   try{
     const checkUser = await db.query(`SELECT * FROM users WHERE email = $1`, [email])
-    if (checkUser[0].rowCount === 0 ||!(await bcrypt.compare(password, checkUser[0].password))) return res.sendStatus(401)
+    if (checkUser.rowCount === 0 ||!(await bcrypt.compare(password, checkUser[0].password))) return res.sendStatus(401)
 
     delete req.body.password
 
