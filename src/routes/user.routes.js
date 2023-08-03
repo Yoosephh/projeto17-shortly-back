@@ -6,7 +6,7 @@ const userRoute = Router();
 
 userRoute.post("/signup", validateSchemas(signUpSchema), signUp)
 
-userRoute.post("/signup", validateSchemas(signInSchema), signIn)
+userRoute.post("/signin", validateSchemas(signInSchema), signIn)
 
 userRoute.get("/users/me",  sendUser)
 
