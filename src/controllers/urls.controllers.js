@@ -11,7 +11,7 @@ export async function createUrl(req,res) {
 
     const shortUrl = nanoid(8)
 
-    const obj = await db.query(`INSERT INTO urls ("url", "shortUrl", "userId") VALUES ($1, $2, $3) RETURNING id`, [url, shortUrl, checkUser.rows[0].userId])
+    const obj = await db.query(`INSERT INTO urls (url, "shortUrl", "userId") VALUES ($1, $2, $3) RETURNING id`, [url, shortUrl, checkUser.rows[0].userId])
 
     res.status(201).send({id: obj.rows[0].id, shortUrl})
   }catch (err){
