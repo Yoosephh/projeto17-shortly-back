@@ -3,10 +3,16 @@ import {nanoid} from "nanoid"
 
 
 export async function createUrl(req,res) {
-  const {Authorization} = req.headers
+  const token = req.headers.authorization.replace("Bearer ", "")
   const {url} = req.body
   try{
     const shortUrl = nanoid(8)
+    const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
+    if (checkUser.rows.length === 0) return res.status(401)
+
+    const obj = await db.query(`INSER INTO urls ("URLs", "shortenedURL", "userId") VALUES ($1, $2, $3)`, [url, shortUrl, checkUser.rows[0].userId])
+
+    res.status(201).send({id: obj.rows[0].id, shortUrl})
   }catch (err){
     console.log(err)
   }
