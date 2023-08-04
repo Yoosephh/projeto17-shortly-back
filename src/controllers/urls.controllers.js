@@ -48,8 +48,18 @@ export async function redirectUser(req,res) {
 }
 
 export async function deleteUrl(req,res) {
+  const {id:urlId} = req.params
+  const token = req.headers.authorization.replace("Bearer ", "")
+  if(!token) return res.status(401).send({message:"Envio do token é obrigatório"})
   try{
+    const checkToken = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
+    if (checkToken.rowCount === 0) return res.sendStatus(401)
 
+    const checkUrl = await db.query(`SELECT * FROM urls WHERE "id" = $1`, [urlId])
+    if(checkUrl.rows[0].userId !== checkToken.rows[0].userId) return res.status(401).send({message: "Não é possível deletar uma URL que não pertence ao usuário informado"})
+
+    await db.query(`DELETE from urls WHERE id = $1`, [urlId])
+    return res.status(204).send({message:"Url excluída com sucesso!"})
   }catch (err){
     console.log(err)
   }
