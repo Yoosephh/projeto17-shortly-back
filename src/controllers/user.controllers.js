@@ -40,7 +40,7 @@ export async function signIn(req,res){
 }
 
 export async function sendUser(req,res){
-  const {token} = req.headers
+  const token = req.headers.authorization.replace("Bearer ", "")
   if (!token) return res.status(401).send({message:"Obrigatório fornecer um token"})
   try{
     const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
