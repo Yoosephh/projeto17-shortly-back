@@ -12,7 +12,9 @@ export async function createUrl(req,res) {
 
     const obj = await db.query(`INSERT INTO urls ("URLs", "shortenedURL", "userId") VALUES ($1, $2, $3)`, [url, shortUrl, checkUser.rows[0].userId])
 
-    res.status(201).send({id: obj.rows[0].id, shortUrl})
+    const getId = await db.query(`SELECT * FROM "urls" WHERE "shortenedURL" = $1`, [shortUrl])
+
+    res.status(201).send({id: getId.rows[0].id, shortUrl})
   }catch (err){
     console.log(err)
   }
