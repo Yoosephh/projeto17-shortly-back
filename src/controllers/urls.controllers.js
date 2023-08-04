@@ -6,9 +6,10 @@ export async function createUrl(req,res) {
   const token = req.headers.authorization.replace("Bearer ", "")
   const {url} = req.body
   try{
-    const shortUrl = nanoid(8)
     const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
-    if (checkUser.rows.length === 0) return res.status(401)
+    if (checkUser.rowCount === 0) return res.sendStatus(401)
+
+    const shortUrl = nanoid(8)
 
     const obj = await db.query(`INSERT INTO urls ("URLs", "shortenedURL", "userId") VALUES ($1, $2, $3) RETURNING id`, [url, shortUrl, checkUser.rows[0].userId])
 
