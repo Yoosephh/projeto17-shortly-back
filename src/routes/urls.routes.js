@@ -11,5 +11,6 @@ urlsRoute.get("/urls/:id", sendUrl)
 urlsRoute.get("/urls/open/:shortUrl", redirectUser)
 
 urlsRoute.delete("/urls/:id", deleteUrl)
+urlsRoute.get("/ranking", )
 
 export default urlsRoute;
