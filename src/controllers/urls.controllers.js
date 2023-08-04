@@ -10,11 +10,9 @@ export async function createUrl(req,res) {
     const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
     if (checkUser.rows.length === 0) return res.status(401)
 
-    const obj = await db.query(`INSERT INTO urls ("URLs", "shortenedURL", "userId") VALUES ($1, $2, $3)`, [url, shortUrl, checkUser.rows[0].userId])
+    const obj = await db.query(`INSERT INTO urls ("URLs", "shortenedURL", "userId") VALUES ($1, $2, $3) RETURNING id`, [url, shortUrl, checkUser.rows[0].userId])
 
-    const getId = await db.query(`SELECT * FROM "urls" WHERE "shortenedURL" = $1`, [shortUrl])
-
-    res.status(201).send({id: getId.rows[0].id, shortUrl})
+    res.status(201).send({id: obj.rows[0].id, shortUrl})
   }catch (err){
     console.log(err)
   }
@@ -23,7 +21,7 @@ export async function createUrl(req,res) {
 export async function sendUrl(req,res) {
   const {id:urlId} = req.params
   try{
-    const checkUrl = await db.query(`SELECT * FROM "URLs" where id = $1`, [urlId])
+    const checkUrl = await db.query(`SELECT * FROM "urls" where id = $1`, [urlId])
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
     const { id, shortUrl, URLs:url} = checkUrl.rows[0]
