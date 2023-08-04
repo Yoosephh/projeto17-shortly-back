@@ -58,6 +58,8 @@ export async function deleteUrl(req,res) {
     const checkUrl = await db.query(`SELECT * FROM urls WHERE "id" = $1`, [urlId])
     if(checkUrl.rows[0].userId !== checkToken.rows[0].userId) return res.status(401).send({message: "Não é possível deletar uma URL que não pertence ao usuário informado"})
 
+    if(checkUrl.rowCount === 0) return res.sendStatus(404)
+    
     await db.query(`DELETE from urls WHERE id = $1`, [urlId])
     return res.status(204).send({message:"Url excluída com sucesso!"})
   }catch (err){

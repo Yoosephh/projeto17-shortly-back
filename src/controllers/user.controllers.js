@@ -46,7 +46,42 @@ export async function sendUser(req,res){
     const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
     if(checkUser.rowCount === 0) return res.status(401).send({message:"Token fornecido é inválido"})
 
-    
+    const userQuery = await db.query('SELECT id, name FROM users WHERE id = $1', [checkUser.rows[0].userId]);
+    const user = userQuery.rows[0];
+
+    const visitCountQuery = await db.query('SELECT SUM(views) AS visitCount FROM urls WHERE "userId" = $1', [checkUser.rows[0].userId]);
+    const visitCount = visitCountQuery.rows[0].visitcount || 0;
+
+    const shortenedUrlsQuery = await db.query(
+      'SELECT id, shortUrl, url, views FROM urls WHERE "userId" = $1',
+      [checkUser.rows[0].userId]
+    );
+    const shortenedUrls = shortenedUrlsQuery.rows;
+
+    // const response = {
+    //   id: user.id,
+    //   name: user.name,
+    //   visitCount: visitCount,
+    //   shortenedUrls: shortenedUrls.map((url) => ({
+    //     id: url.id,
+    //     shortUrl: url.shortUrl,
+    //     url: url.url,
+    //     visitCount: url.views,
+    //   })),
+    // };
+
+    res.status(200).send({
+      id: user.id,
+      name: user.name,
+      visitCount: visitCount,
+      shortenedUrls: shortenedUrls.map((url) => ({
+        id: url.id,
+        shortUrl: url.shortUrl,
+        url: url.url,
+        visitCount: url.views,
+      })),
+    });
+
   }catch (err){
     console.log(err)
   }
