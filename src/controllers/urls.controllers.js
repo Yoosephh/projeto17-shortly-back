@@ -19,7 +19,13 @@ export async function createUrl(req,res) {
 }
 
 export async function sendUrl(req,res) {
+  const {id:urlId} = req.params
   try{
+    const checkUrl = await db.query(`SELECT * FROM "URLs" where id = $1`, [urlId])
+    if(checkUrl.rowCount === 0) return res.sendStatus(404)
+
+    const { id, shortUrl, URLs:url} = checkUrl.rows[0]
+    res.status(200).send({id, shortUrl, url})
 
   }catch (err){
     console.log(err)
