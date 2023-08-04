@@ -78,8 +78,8 @@ export async function sendUser(req,res){
       SELECT
         users.id,
         users.name,
-        COALESCE(SUM(urls.views), 0) AS visitCount,
-        JSON_AGG(JSON_BUILD_OBJECT('id', urls.id, 'shortUrl', urls.shortUrl, 'url', urls.url, 'visitCount', urls.views)) AS shortenedUrls
+        COALESCE(SUM(urls.views), 0) AS "visitCount",
+        JSON_AGG(JSON_BUILD_OBJECT('id', urls.id, "shortUrl", urls."shortUrl", "url", urls.url, "visitCount", urls.views)) AS "shortenedUrls"
       FROM tokens
       JOIN users ON tokens.userId = users.id
       LEFT JOIN urls ON users.id = urls.userId
@@ -93,19 +93,18 @@ export async function sendUser(req,res){
       return res.status(401).send({ message: "Token fornecido é inválido" });
     }
 
-    const { id, name, visitcount, shortenedurls } = result.rows[0];
+    const { id, name, visitcount, shortenedUrls } = result.rows[0];
 
     const response = {
       id,
       name,
       visitCount: visitcount,
-      shortenedUrls: shortenedurls || [],
+      shortenedUrls: shortenedUrls || [],
     };
 
     res.status(200).send(response);
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: "Internal server error" });
+    console.log(error);
   }
 
 }
