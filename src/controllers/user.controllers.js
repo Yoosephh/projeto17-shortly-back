@@ -53,7 +53,7 @@ export async function sendUser(req,res){
     const visitCount = visitCountQuery.rows[0].visitcount || 0;
 
     const shortenedUrlsQuery = await db.query(
-      'SELECT id, shortUrl, url, views FROM urls WHERE "userId" = $1',
+      'SELECT id, "shortUrl", url, views FROM urls WHERE "userId" = $1',
       [checkUser.rows[0].userId]
     );
     const shortenedUrls = shortenedUrlsQuery.rows;
