@@ -25,7 +25,8 @@ export async function sendUrl(req,res) {
     const checkUrl = await db.query(`SELECT * FROM "urls" where id = $1`, [urlId])
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
-    const { id, shortenedUrl:shortUrl, URLs:url} = checkUrl.rows[0]
+    const { id, shortenedURL: shortUrl, URLs:url} = checkUrl.rows[0]
+    console.log(checkUrl.rows[0])
     res.status(200).send({id, shortUrl, url})
 
   }catch (err){
