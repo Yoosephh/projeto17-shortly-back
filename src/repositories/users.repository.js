@@ -9,7 +9,7 @@ export async function insertIntoUsers(name, cryptedPassword, email){
 }
 
 export async function insertIntoTokens(checkUser, token) {
-  return db.query(`INSERT INTO tokens ("userId", token) VALUES ($1, $2)`, [checkUser.rows[0].id, token])
+  return await db.query(`INSERT INTO tokens ("userId", token) VALUES ($1, $2)`, [checkUser.rows[0].id, token])
 }
 
 export async function sendUsersMe(token) {

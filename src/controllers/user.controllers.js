@@ -1,4 +1,3 @@
-import { db } from "../database/database.js"
 import bcrypt from "bcrypt"
 import {v4 as uuid} from "uuid"
 import { insertIntoUsers, selectAllUsersEmail, sendUsersMe } from "../repositories/users.repository.js"
