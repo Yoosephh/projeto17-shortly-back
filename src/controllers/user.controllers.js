@@ -38,11 +38,7 @@ export async function signIn(req,res){
     console.log(err)
   }
 }
-
-export async function sendUser(req,res){
-  const token = req.headers.authorization.replace("Bearer ", "")
-  if (!token) return res.status(401).send({message:"Obrigatório fornecer um token"})
-  // try{
+// try{
   //   const checkUser = await db.query(`SELECT * FROM tokens WHERE token = $1`, [token])
   //   if(checkUser.rowCount === 0) return res.status(401).send({message:"Token fornecido é inválido"})
 
@@ -73,12 +69,15 @@ export async function sendUser(req,res){
   // }catch (err){
   //   console.log(err)
   // }
+export async function sendUser(req,res){
+  const token = req.headers.authorization.replace("Bearer ", "")
+  if (!token) return res.status(401).send({message:"Obrigatório fornecer um token"})
   try{
   const userQuery = `
       SELECT
         users.id,
         users.name,
-        COALESCE(SUM(urls.views), 0) AS "visitsCount",
+        COALESCE(SUM(urls.views), 0) AS "visitCount",
         JSON_AGG(JSON_BUILD_OBJECT('id', urls.id, 'shortUrl', urls."shortUrl", 'url', urls.url, 'visitCount', urls.views)) AS "shortenedUrls"
       FROM tokens
       JOIN users ON tokens."userId" = users.id
@@ -93,12 +92,12 @@ export async function sendUser(req,res){
       return res.status(401).send({ message: "Token fornecido é inválido" });
     }
 
-    const { id, name, visitcount, shortenedUrls } = result.rows[0];
+    const { id, name, visitCount, shortenedUrls } = result.rows[0];
 
     const response = {
       id,
       name,
-      visitCount: visitcount,
+      visitCount: visitCount,
       shortenedUrls: shortenedUrls || [],
     };
 
