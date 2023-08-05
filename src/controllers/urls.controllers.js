@@ -69,7 +69,7 @@ export async function deleteUrl(req,res) {
 
 export async function rankUrls(req,res){
   try{
-    const checkUrl = await db.query(`SELECT * FROM "urls" where id = $1`, [urlId])
+    const checkUrl = await db.query(`SELECT * FROM `)
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
     const { id, shortUrl, url} = checkUrl.rows[0]

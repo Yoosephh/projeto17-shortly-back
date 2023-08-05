@@ -78,7 +78,7 @@ export async function sendUser(req,res){
       SELECT
         users.id,
         users.name,
-        COALESCE(SUM(urls.views), 0) AS "visitCount",
+        COALESCE(SUM(urls.views), 0) AS "visitsCount",
         JSON_AGG(JSON_BUILD_OBJECT('id', urls.id, 'shortUrl', urls."shortUrl", 'url', urls.url, 'visitCount', urls.views)) AS "shortenedUrls"
       FROM tokens
       JOIN users ON tokens."userId" = users.id
