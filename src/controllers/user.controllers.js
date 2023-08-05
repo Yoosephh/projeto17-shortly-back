@@ -82,7 +82,7 @@ export async function sendUser(req,res){
         JSON_AGG(JSON_BUILD_OBJECT('id', urls.id, 'shortUrl', urls."shortUrl", 'url', urls.url, 'visitCount', urls.views)) AS "shortenedUrls"
       FROM tokens
       JOIN users ON tokens."userId" = users.id
-      LEFT JOIN urls ON users.id = urls."userId"
+      JOIN urls ON users.id = urls."userId"
       WHERE tokens.token = $1
       GROUP BY users.id, users.name;
     `;
