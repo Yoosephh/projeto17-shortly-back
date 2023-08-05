@@ -1,4 +1,3 @@
-import { db } from "../database/database.js"
 import {nanoid} from "nanoid"
 import { insertIntoUrls, rankUsers, selectAllToken, selectAllUrlsId, selectAllUrlsShortUrl, updateUrls, } from "../repositories/urls.repository.js"
 
@@ -37,9 +36,10 @@ export async function redirectUser(req,res) {
   const {shortUrl} = req.params
   try{
     const checkUrl = selectAllUrlsShortUrl(shortUrl)
+
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
-    updateUrls(shortUrl)
+    await updateUrls(shortUrl)
     res.redirect(checkUrl.rows[0].url)
   }catch (err){
     console.log(err)
@@ -51,10 +51,10 @@ export async function deleteUrl(req,res) {
   const token = req.headers.authorization.replace("Bearer ", "")
   if(!token) return res.status(401).send({message:"Envio do token é obrigatório"})
   try{
-    const checkToken = selectAllToken(token)
+    const checkToken = await selectAllToken(token)
     if (checkToken.rowCount === 0) return res.sendStatus(401)
 
-    const checkUrl = selectAllUrlsId(urlId)
+    const checkUrl = await selectAllUrlsId(urlId)
 
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
@@ -69,7 +69,7 @@ export async function deleteUrl(req,res) {
 
 export async function rankUrls(req,res){
   try{
-    const result = rankUsers();
+    const result = await rankUsers();
     const rankedUsers = result.rows.map((row) => ({
       id: row.id,
       name: row.name,
