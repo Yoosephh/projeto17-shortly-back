@@ -70,13 +70,29 @@ export async function deleteUrl(req,res) {
 
 export async function rankUrls(req,res){
   try{
-    const checkUrl = await db.query(`SELECT * FROM `)
-    if(checkUrl.rowCount === 0) return res.sendStatus(404)
+    const rankQuery = `
+      SELECT
+        users.id,
+        users.name,
+        COUNT(urls.id) AS "linksCount",
+        COALESCE(SUM(urls.views), 0) AS "visitCount"
+      FROM users
+      LEFT JOIN urls ON users.id = urls."userId"
+      GROUP BY users.id, users.name
+      ORDER BY "visitCount" DESC
+      LIMIT 10;
+    `;
 
-    const { id, shortUrl, url} = checkUrl.rows[0]
-    console.log(checkUrl.rows[0])
-    res.status(200).send({id, shortUrl, url})
+    const result = await db.query(rankQuery);
 
+    const rankedUsers = result.rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      linksCount: row.linksCount,
+      visitCount: row.visitCount,
+    }));
+
+    res.status(200).send(rankedUsers)
   }catch (err){
     console.log(err)
   }
