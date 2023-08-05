@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import {v4 as uuid} from "uuid"
-import { insertIntoUsers, selectAllUsersEmail, sendUsersMe } from "../repositories/users.repository.js"
+import { insertIntoTokens, insertIntoUsers, selectAllUsersEmail, sendUsersMe } from "../repositories/users.repository.js"
 
 export async function signUp(req,res){
   const {name, email, password, confirmPassword} = req.body
