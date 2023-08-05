@@ -35,7 +35,7 @@ export async function sendUrl(req,res) {
 export async function redirectUser(req,res) {
   const {shortUrl} = req.params
   try{
-    const checkUrl = selectAllUrlsShortUrl(shortUrl)
+    const checkUrl = await selectAllUrlsShortUrl(shortUrl)
 
     if(checkUrl.rowCount === 0) return res.sendStatus(404)
 
