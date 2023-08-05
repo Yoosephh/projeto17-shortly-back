@@ -15,7 +15,7 @@ export async function updateUrls(shortUrl){
   return await db.query(`UPDATE urls SET "views" = "views" + 1 WHERE "shortUrl" = $1`, [shortUrl])
 }
 
-export async function deleteUrl(urlId) {
+export async function deleteUrlRep(urlId) {
   return await db.query(`DELETE FROM urls WHERE id = $1`, [urlId])
 }
 

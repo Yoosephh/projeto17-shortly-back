@@ -1,5 +1,5 @@
 import {nanoid} from "nanoid"
-import { insertIntoUrls, rankUsers, selectAllToken, selectAllUrlsId, selectAllUrlsShortUrl, updateUrls, } from "../repositories/urls.repository.js"
+import { deleteUrlRep, insertIntoUrls, rankUsers, selectAllToken, selectAllUrlsId, selectAllUrlsShortUrl, updateUrls, } from "../repositories/urls.repository.js"
 
 
 export async function createUrl(req,res) {
@@ -60,7 +60,7 @@ export async function deleteUrl(req,res) {
 
     if(checkUrl.rows[0].userId !== checkToken.rows[0].userId) return res.status(401).send({message: "Não é possível deletar uma URL que não pertence ao usuário informado"})
 
-    deleteUrl(urlId)
+    await deleteUrlRep(urlId)
     return res.status(204).send({message:"Url excluída com sucesso!"})
   }catch (err){
     console.log(err)
